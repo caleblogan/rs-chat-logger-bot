@@ -9,16 +9,22 @@ import java.util.Map;
 public class HttpClient {
 
     private URL url;
+    private String apiKey;
     private Proxy proxy;
     int timeout = 30000;
 
     public HttpClient(String url) throws MalformedURLException {
-        this(url, null);
+        this(url, null, null);
     }
 
-    public HttpClient(String url, Proxy proxy) throws MalformedURLException {
+    public HttpClient(String url, String apiKey) throws MalformedURLException {
+        this(url, apiKey, null);
+    }
+
+    public HttpClient(String url, String apiKey, Proxy proxy) throws MalformedURLException {
         this.url = new URL(url);
         this.proxy = proxy;
+        this.apiKey = apiKey;
     }
 
     public InputStream get() throws IOException {
@@ -31,6 +37,9 @@ public class HttpClient {
 //        if (url.getPath().contains(BotfarmClient.getHost())) {
 //            con.setRequestProperty("pass", "bobsmyuncle62");
 //        }
+        if (apiKey != null) {
+            con.setRequestProperty("Authorization", "Bearer " + apiKey);
+        }
         con.setDoOutput(true);
 //        con.setRequestProperty("pass", "bobsmyuncle99");
         con.setRequestProperty("charset", "utf-8");
@@ -58,6 +67,9 @@ public class HttpClient {
 //        if (url.getPath().contains(BotfarmClient.getHost())) {
 //            con.setRequestProperty("pass", "bobsmyuncle62");
 //        }
+        if (apiKey != null) {
+            con.setRequestProperty("Authorization", "Bearer " + apiKey);
+        }
 
         con.setDoOutput(true);
 //        con.setRequestProperty("pass", "bobsmyuncle99");

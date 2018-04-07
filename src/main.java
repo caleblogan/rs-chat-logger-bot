@@ -23,10 +23,14 @@ public class main extends AbstractScript implements MessageListener {
 
     String API_BASE = "http://localhost:8000/api/v1";
     String API_MESSAGES = API_BASE + "/messages";
+    String API_BOTS = API_BASE + "/bots";
 
+
+    String apiToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNhbGViMiIsImlhdCI6MTUyMzA3MzYwOH0.cfcfy4hK2ZaD5fTCkfMGfvS2d_qQh5pApsyRm4BGjMA";
     String botLocationName = "Varrock Ge";
     int world = 301;
 
+    Bot bot;
     Timer timer;
     Timer playerTimer;
     long nextPlayerUpdate;
@@ -38,10 +42,15 @@ public class main extends AbstractScript implements MessageListener {
         log("Chat Logger!");
         timer = new Timer();
         playerTimer = new Timer();
+        bot = new Bot(apiToken, botLocationName, 301);
     }
 
     @Override
     public int onLoop() {
+        if (bot.shouldCheckin()) {
+            log("bot checking in");
+            bot.checkin();
+        }
         if (playerTimer.elapsed() > nextPlayerUpdate) {
             updatePlayerPositions();
             nextPlayerUpdate = playerTimer.elapsed() + 2 * 1000;
@@ -89,7 +98,7 @@ public class main extends AbstractScript implements MessageListener {
             data.put("world", world);
 //            data.put("created_at", message.getTime());
             HttpClient req = new HttpClient(API_MESSAGES);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(req.post(data)));
+//            BufferedReader reader = new BufferedReader(new InputStreamReader(req.post(data)));
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
